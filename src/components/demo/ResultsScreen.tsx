@@ -68,10 +68,16 @@ export function ResultsScreen() {
       </Card>
 
       <div className="grid grid-cols-2 gap-4 pt-4">
-        <Button variant="outline" className="h-14 rounded-2xl border-white/10 bg-white/5 gap-2" onClick={() => {}}>
+        <Button 
+          className="h-14 rounded-2xl bg-intel-blue hover:bg-intel-blue/90 gap-2 font-headline" 
+          onClick={() => {}}
+        >
            <Share2 className="w-4 h-4" /> Export
         </Button>
-        <Button className="h-14 rounded-2xl bg-intel-blue hover:bg-intel-blue/90 gap-2" onClick={handleRestart}>
+        <Button 
+          className="h-14 rounded-2xl bg-intel-blue hover:bg-intel-blue/90 gap-2 font-headline" 
+          onClick={handleRestart}
+        >
            <RotateCcw className="w-4 h-4" /> New Cycle
         </Button>
       </div>
