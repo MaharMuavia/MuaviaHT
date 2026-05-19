@@ -3,7 +3,7 @@
 import React from 'react';
 import { useDemo } from '@/app/lib/demo-context';
 import { Button } from '@/components/ui/button';
-import { Home, Upload, Activity, Lightbulb, Gavel, Play, BarChart3, ShieldAlert } from 'lucide-react';
+import { Home, Upload, Activity, Lightbulb, Gavel, Play, BarChart3, Cpu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
@@ -23,11 +23,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col min-h-screen max-w-md mx-auto relative bg-navy-bg shadow-2xl">
       {/* Top Header */}
       <header className="sticky top-0 z-50 flex items-center justify-between p-4 bg-background/80 backdrop-blur-md border-b border-white/5">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => setScreen('HOME')}>
           <div className="w-8 h-8 rounded-lg bg-intel-blue flex items-center justify-center shadow-lg shadow-intel-blue/20">
-            <ShieldAlert className="w-5 h-5 text-white" />
+            <Cpu className="w-5 h-5 text-white" />
           </div>
-          <span className="font-headline font-bold text-lg tracking-tight">SENTINEL</span>
+          <span className="font-headline font-bold text-lg tracking-tight">VisualCore</span>
         </div>
         <div className="flex gap-2">
            <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
