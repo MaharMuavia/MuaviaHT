@@ -28,7 +28,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <header className="sticky top-0 z-50 flex items-center justify-between p-4 bg-background/80 backdrop-blur-md border-b border-white/5 animate-in slide-in-from-top-4 duration-500">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => setScreen('HOME')}>
             <div className="w-8 h-8 rounded-lg bg-intel-blue flex items-center justify-center shadow-lg shadow-intel-blue/20">
-              <Bot className="w-5 h-5 text-white" />
+              <BarChart3 className="w-5 h-5 text-white" />
             </div>
             <span className="font-headline font-bold text-lg tracking-tight">VisualCore</span>
           </div>
