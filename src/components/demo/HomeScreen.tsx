@@ -4,7 +4,7 @@ import React from 'react';
 import { useDemo } from '@/app/lib/demo-context';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Upload, ShieldCheck, Sparkles } from 'lucide-react';
+import { Upload, BrainCircuit, Sparkles } from 'lucide-react';
 
 export function HomeScreen() {
   const { setScreen } = useDemo();
@@ -19,7 +19,7 @@ export function HomeScreen() {
       {/* Hero Section */}
       <div className="text-center space-y-6 relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-1000">
         <div className="inline-flex items-center justify-center p-4 rounded-3xl bg-intel-blue/10 border border-intel-blue/20 mb-2 shadow-2xl shadow-intel-blue/10 animate-float">
-          <ShieldCheck className="w-12 h-12 text-intel-blue" />
+          <BrainCircuit className="w-12 h-12 text-intel-blue" />
         </div>
         <div className="space-y-2">
           <h1 className="text-4xl font-headline font-bold tracking-tight">
