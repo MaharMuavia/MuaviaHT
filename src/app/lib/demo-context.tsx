@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { AnalyzeAndGenerateInsightsOutput } from '@/ai/flows/analyze-and-generate-insights';
 import { GenerateAndJustifyDecisionOutput } from '@/ai/flows/generate-and-justify-decision-flow';
 
-type Screen = 'HOME' | 'UPLOAD' | 'WORKFLOW' | 'INSIGHTS' | 'DECISION' | 'EXECUTION' | 'RESULTS' | 'FAILURE';
+type Screen = 'SIGN_IN' | 'SIGN_UP' | 'HOME' | 'UPLOAD' | 'WORKFLOW' | 'INSIGHTS' | 'DECISION' | 'EXECUTION' | 'RESULTS' | 'FAILURE';
 
 interface DemoContextType {
   currentScreen: Screen;
@@ -23,7 +23,7 @@ interface DemoContextType {
 const DemoContext = createContext<DemoContextType | undefined>(undefined);
 
 export function DemoProvider({ children }: { children: ReactNode }) {
-  const [currentScreen, setCurrentScreen] = useState<Screen>('HOME');
+  const [currentScreen, setCurrentScreen] = useState<Screen>('SIGN_IN');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [analysisResults, setAnalysisResults] = useState<AnalyzeAndGenerateInsightsOutput | null>(null);
   const [decisionResults, setDecisionResults] = useState<GenerateAndJustifyDecisionOutput | null>(null);

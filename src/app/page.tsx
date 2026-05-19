@@ -10,11 +10,15 @@ import { InsightsScreen } from '@/components/demo/InsightsScreen';
 import { DecisionScreen } from '@/components/demo/DecisionScreen';
 import { ExecutionScreen } from '@/components/demo/ExecutionScreen';
 import { ResultsScreen } from '@/components/demo/ResultsScreen';
+import { SignInScreen } from '@/components/demo/SignInScreen';
+import { SignUpScreen } from '@/components/demo/SignUpScreen';
 
 function ScreenRenderer() {
   const { currentScreen } = useDemo();
 
   switch (currentScreen) {
+    case 'SIGN_IN': return <SignInScreen />;
+    case 'SIGN_UP': return <SignUpScreen />;
     case 'HOME': return <HomeScreen />;
     case 'UPLOAD': return <UploadScreen />;
     case 'WORKFLOW': return <WorkflowScreen />;
