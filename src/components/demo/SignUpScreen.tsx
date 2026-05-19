@@ -5,7 +5,7 @@ import { useDemo } from '@/app/lib/demo-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Cpu, Loader2 } from 'lucide-react';
+import { Bot, Loader2 } from 'lucide-react';
 
 export function SignUpScreen() {
   const { setScreen } = useDemo();
@@ -41,7 +41,7 @@ export function SignUpScreen() {
     <div className="min-h-[80vh] flex flex-col justify-center p-8 space-y-10 animate-in fade-in duration-700">
       <div className="flex flex-col items-center text-center space-y-4">
         <div className="w-14 h-14 rounded-2xl bg-intel-blue flex items-center justify-center shadow-2xl shadow-intel-blue/30 glow-active">
-          <Cpu className="w-8 h-8 text-white" />
+          <Bot className="w-8 h-8 text-white" />
         </div>
         <div className="space-y-1">
           <h1 className="text-2xl font-headline font-bold tracking-tight uppercase">Create Account</h1>
