@@ -13,11 +13,11 @@ import {
   Rocket, 
   RotateCcw,
   CheckCircle2,
-  BrainCircuit,
   ArrowRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { generateLiveAgentReasoning } from '@/ai/flows/generate-live-agent-reasoning-flow';
+import { Button } from '@/components/ui/button';
 
 const AGENTS = [
   { name: 'Input Agent', icon: Database, color: 'text-blue-400' },
@@ -42,8 +42,6 @@ export function WorkflowScreen() {
     }
 
     const runAgent = async () => {
-      const agent = AGENTS[activeAgentIndex];
-      
       // Update starting status
       setAgentStates(prev => {
         const next = [...prev];
@@ -53,7 +51,7 @@ export function WorkflowScreen() {
 
       try {
         const reasoning = await generateLiveAgentReasoning({
-          agentName: agent.name,
+          agentName: AGENTS[activeAgentIndex].name,
           currentContext: `Processing report ${uploadedFile?.name || 'internal_data'}. Sequential phase ${activeAgentIndex + 1}.`,
           previousAgentReasoning: activeAgentIndex > 0 ? agentStates[activeAgentIndex - 1].reasoning : undefined
         });
@@ -82,7 +80,7 @@ export function WorkflowScreen() {
             });
             setTimeout(() => setActiveAgentIndex(idx => idx + 1), 800);
           }
-        }, 300);
+        }, 400);
 
       } catch (err) {
         console.error(err);
@@ -93,7 +91,7 @@ export function WorkflowScreen() {
   }, [activeAgentIndex, setScreen, uploadedFile]);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-headline font-bold">Neural Workflow</h1>
         <Badge variant="outline" className="bg-intel-blue/10 text-intel-blue border-intel-blue/30 animate-pulse">
@@ -114,14 +112,14 @@ export function WorkflowScreen() {
             <Card 
               key={agent.name} 
               className={cn(
-                "glass-card border-none transition-all duration-500",
-                isActive ? "opacity-100 scale-100 glow-active translate-x-1" : isDone ? "opacity-60 scale-95" : "opacity-30 scale-90 translate-x-2"
+                "glass-card border-none transition-all duration-700",
+                isActive ? "opacity-100 scale-100 glow-active translate-x-1 ring-1 ring-intel-blue/50" : isDone ? "opacity-60 scale-95" : "opacity-30 scale-90 translate-x-2"
               )}
             >
               <CardContent className="p-4 flex items-start gap-4">
                 <div className={cn(
-                  "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 z-10",
-                  isActive ? "bg-intel-blue animate-pulse" : isDone ? "bg-green-500" : "bg-secondary"
+                  "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 z-10 transition-all duration-500",
+                  isActive ? "bg-intel-blue shadow-[0_0_15px_rgba(66,133,244,0.6)]" : isDone ? "bg-green-500" : "bg-secondary"
                 )}>
                   {isDone ? <CheckCircle2 className="w-5 h-5 text-white" /> : <agent.icon className={cn("w-5 h-5 text-white")} />}
                 </div>
@@ -130,7 +128,7 @@ export function WorkflowScreen() {
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-bold">{agent.name}</h3>
                     <span className={cn(
-                      "text-[10px] uppercase font-bold tracking-widest",
+                      "text-[10px] uppercase font-bold tracking-widest transition-colors duration-500",
                       isActive ? "text-intel-blue" : isDone ? "text-green-500" : "text-muted-foreground"
                     )}>
                       {state.status}
@@ -138,19 +136,19 @@ export function WorkflowScreen() {
                   </div>
 
                   {isActive && (
-                    <div className="space-y-2 animate-in fade-in slide-in-from-top-1 duration-300">
+                    <div className="space-y-2 animate-in fade-in slide-in-from-left-2 duration-500">
                       <p className="text-xs text-muted-foreground leading-relaxed italic">
                         "{state.reasoning}"
                       </p>
                       <div className="flex items-center gap-2">
-                         <Progress value={state.progress} className="h-1 flex-1" />
+                         <Progress value={state.progress} className="h-1 flex-1 transition-all duration-500" />
                          <span className="text-[10px] font-mono text-intel-blue">{state.progress}%</span>
                       </div>
                     </div>
                   )}
 
                   {isDone && (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 animate-in fade-in duration-300">
                       <div className="h-1 flex-1 bg-green-500/20 rounded-full">
                         <div className="h-full bg-green-500 w-full rounded-full" />
                       </div>
@@ -165,8 +163,8 @@ export function WorkflowScreen() {
       </div>
 
       {activeAgentIndex >= AGENTS.length && (
-        <div className="pt-4 animate-in fade-in duration-500">
-           <Button className="w-full bg-green-500 hover:bg-green-600 text-white gap-2" onClick={() => setScreen('INSIGHTS')}>
+        <div className="pt-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+           <Button className="w-full h-14 bg-green-500 hover:bg-green-600 text-white gap-2 rounded-2xl font-headline glow-active" onClick={() => setScreen('INSIGHTS')}>
              Analysis Complete <ArrowRight className="w-4 h-4" />
            </Button>
         </div>

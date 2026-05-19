@@ -4,21 +4,21 @@ import React from 'react';
 import { useDemo } from '@/app/lib/demo-context';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Upload, ShieldCheck, Sparkles, FileType } from 'lucide-react';
+import { Upload, ShieldCheck, Sparkles } from 'lucide-react';
 
 export function HomeScreen() {
   const { setScreen } = useDemo();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] p-8 space-y-12 animate-in fade-in duration-1000">
+    <div className="flex flex-col items-center justify-center min-h-[80vh] p-8 space-y-12 overflow-hidden">
       {/* Visual Background Effect */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-intel-blue/5 rounded-full blur-[120px] animate-pulse-glow" />
       </div>
 
       {/* Hero Section */}
-      <div className="text-center space-y-6 relative z-10">
-        <div className="inline-flex items-center justify-center p-4 rounded-3xl bg-intel-blue/10 border border-intel-blue/20 mb-2 shadow-2xl shadow-intel-blue/10">
+      <div className="text-center space-y-6 relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+        <div className="inline-flex items-center justify-center p-4 rounded-3xl bg-intel-blue/10 border border-intel-blue/20 mb-2 shadow-2xl shadow-intel-blue/10 animate-float">
           <ShieldCheck className="w-12 h-12 text-intel-blue" />
         </div>
         <div className="space-y-2">
@@ -33,7 +33,7 @@ export function HomeScreen() {
       </div>
 
       {/* Clean Centered Upload Area */}
-      <div className="w-full space-y-6 relative z-10">
+      <div className="w-full space-y-6 relative z-10 animate-in fade-in slide-in-from-bottom-12 duration-1000 stagger-2">
         <Card 
           onClick={() => setScreen('UPLOAD')}
           className="glass-card border-dashed border-2 border-white/5 hover:border-intel-blue/40 transition-all cursor-pointer group flex flex-col items-center justify-center p-12 bg-white/[0.02]"
@@ -58,7 +58,7 @@ export function HomeScreen() {
       </div>
 
       {/* Footer Meta */}
-      <div className="pt-8 text-center">
+      <div className="pt-8 text-center animate-in fade-in duration-1000 stagger-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/5">
           <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
           <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/80">Core Engine Standby</span>
