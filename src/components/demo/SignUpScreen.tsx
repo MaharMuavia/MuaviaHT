@@ -20,7 +20,7 @@ export function SignUpScreen() {
     const password = formData.get('password') as string;
     const confirm = formData.get('confirm') as string;
 
-    const newErrors: any = {};
+    const newErrors: { name?: string; email?: string; password?: string; confirm?: string } = {};
     if (!name) newErrors.name = "Full name is required";
     if (!email) newErrors.email = "Email is required";
     if (!password) newErrors.password = "Password is required";
@@ -78,7 +78,7 @@ export function SignUpScreen() {
                 <Input 
                   name="password"
                   type="password" 
-                  placeholder="••••••••" 
+                  placeholder="Password" 
                   className="h-12 rounded-xl bg-secondary/50 border-white/5 focus:ring-intel-blue/50"
                 />
              </div>
@@ -87,7 +87,7 @@ export function SignUpScreen() {
                 <Input 
                   name="confirm"
                   type="password" 
-                  placeholder="••••••••" 
+                  placeholder="Confirm" 
                   className="h-12 rounded-xl bg-secondary/50 border-white/5 focus:ring-intel-blue/50"
                 />
              </div>

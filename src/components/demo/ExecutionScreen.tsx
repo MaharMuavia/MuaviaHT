@@ -6,7 +6,7 @@ import { generateExecutionLogs } from '@/ai/flows/generate-execution-logs';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { Terminal, ShieldCheck, CheckCircle2, ChevronRight, BarChart } from 'lucide-react';
+import { Terminal, ShieldCheck, ChevronRight, BarChart } from 'lucide-react';
 
 export function ExecutionScreen() {
   const { decisionResults, setScreen } = useDemo();

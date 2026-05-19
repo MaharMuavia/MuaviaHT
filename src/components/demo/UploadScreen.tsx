@@ -5,19 +5,21 @@ import { useDemo } from '@/app/lib/demo-context';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { FileUp, FileText, CheckCircle2, X, BrainCircuit } from 'lucide-react';
-import { analyzeAndGenerateInsights } from '@/ai/flows/analyze-and-generate-insights';
+import { FileUp, FileText, CheckCircle2, X, BrainCircuit, AlertCircle } from 'lucide-react';
+import { uploadFile } from '@/lib/api';
 
 export function UploadScreen() {
   const { setScreen, setUploadedFile, setAnalysisResults } = useDemo();
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (selected) {
       setFile(selected);
+      setErrorMessage(null);
       // Simulate upload
       setUploadProgress(0);
       const interval = setInterval(() => {
@@ -35,18 +37,19 @@ export function UploadScreen() {
   const handleAnalyze = async () => {
     if (!file) return;
     setIsAnalyzing(true);
+    setErrorMessage(null);
     setUploadedFile(file);
     
     try {
-      // Mocked analysis for the demo
-      const result = await analyzeAndGenerateInsights({
-        reportContent: "Sample business data: Q3 Revenue dropped in Southeast region by 15%. Supply chain delays in Karachi port causing stockouts. Customer sentiment score at 6.2/10.",
-        reportFileName: file.name,
-      });
-      setAnalysisResults(result);
+      // Upload file to local API route and analyze via Gemini
+      const analysisResp = await uploadFile(file);
+
+      // The demo context expects a specific shape; cast to any to avoid strict typing mismatch
+      setAnalysisResults(analysisResp);
       setScreen('WORKFLOW');
     } catch (error) {
       console.error(error);
+      setErrorMessage(error instanceof Error ? error.message : 'Analysis failed. Please try another file.');
     } finally {
       setIsAnalyzing(false);
     }
@@ -109,6 +112,12 @@ export function UploadScreen() {
               "Analyze with AI"
             )}
           </Button>
+          {errorMessage && (
+            <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
         </div>
       )}
 

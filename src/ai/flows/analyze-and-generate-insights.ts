@@ -72,7 +72,7 @@ const analyzeAndGenerateInsightsFlow = ai.defineFlow(
     try {
       const { output } = await prompt(input);
       return output!;
-    } catch (error: any) {
+    } catch {
       console.warn('AI Service Busy, using heuristic fallback for insights.');
       // Fallback insights to keep the demo functional if API is down
       return {
@@ -96,7 +96,7 @@ const analyzeAndGenerateInsightsFlow = ai.defineFlow(
             confidence: "Medium"
           }
         ]
-      };
+      } satisfies AnalyzeAndGenerateInsightsOutput;
     }
   }
 );

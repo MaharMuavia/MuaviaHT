@@ -82,7 +82,7 @@ const generateAndJustifyDecisionFlow = ai.defineFlow(
     try {
       const { output } = await decisionPrompt(input);
       return output!;
-    } catch (error: any) {
+    } catch {
       console.warn('AI Service Busy, using heuristic fallback for decisions.');
       // Fallback decisions
       return {
@@ -114,7 +114,7 @@ const generateAndJustifyDecisionFlow = ai.defineFlow(
         ],
         chosenOptionId: "optimize-operations",
         justification: "Based on heuristic risk-weighting, optimizing current operations provides the most stable path for immediate recovery with minimal risk exposure."
-      };
+      } satisfies GenerateAndJustifyDecisionOutput;
     }
   }
 );

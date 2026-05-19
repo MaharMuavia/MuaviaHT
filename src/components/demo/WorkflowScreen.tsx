@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDemo } from '@/app/lib/demo-context';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -28,12 +28,32 @@ const AGENTS = [
   { name: 'Reflection Agent', icon: RotateCcw, color: 'text-green-400' },
 ];
 
+type AgentState = {
+  status: string;
+  progress: number;
+  reasoning: string;
+  confidence: number;
+};
+
+const INITIAL_AGENT_STATES: AgentState[] = AGENTS.map(() => ({
+  status: 'Idle',
+  progress: 0,
+  reasoning: 'Waiting for signal...',
+  confidence: 0,
+}));
+
 export function WorkflowScreen() {
   const { setScreen, uploadedFile } = useDemo();
   const [activeAgentIndex, setActiveAgentIndex] = useState(0);
-  const [agentStates, setAgentStates] = useState<any[]>(
-    AGENTS.map(() => ({ status: 'Idle', progress: 0, reasoning: 'Waiting for signal...', confidence: 0 }))
-  );
+  const [agentStates, setAgentStates] = useState<AgentState[]>(INITIAL_AGENT_STATES);
+  const agentStatesRef = useRef<AgentState[]>(INITIAL_AGENT_STATES);
+  const updateAgentStates = useCallback((updater: (states: AgentState[]) => AgentState[]) => {
+    setAgentStates(prev => {
+      const next = updater(prev);
+      agentStatesRef.current = next;
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
     if (activeAgentIndex >= AGENTS.length) {
@@ -43,7 +63,7 @@ export function WorkflowScreen() {
 
     const runAgent = async () => {
       // Update starting status
-      setAgentStates(prev => {
+      updateAgentStates(prev => {
         const next = [...prev];
         next[activeAgentIndex] = { ...next[activeAgentIndex], status: 'Processing', progress: 20 };
         return next;
@@ -53,21 +73,21 @@ export function WorkflowScreen() {
         const reasoning = await generateLiveAgentReasoning({
           agentName: AGENTS[activeAgentIndex].name,
           currentContext: `Processing report ${uploadedFile?.name || 'internal_data'}. Sequential phase ${activeAgentIndex + 1}.`,
-          previousAgentReasoning: activeAgentIndex > 0 ? agentStates[activeAgentIndex - 1].reasoning : undefined
+          previousAgentReasoning: activeAgentIndex > 0 ? agentStatesRef.current[activeAgentIndex - 1].reasoning : undefined
         });
 
         // Simulate progress increments
         let p = 20;
         const interval = setInterval(() => {
           p += 20;
-          setAgentStates(prev => {
+          updateAgentStates(prev => {
             const next = [...prev];
             next[activeAgentIndex] = { ...next[activeAgentIndex], progress: p };
             return next;
           });
           if (p >= 100) {
             clearInterval(interval);
-            setAgentStates(prev => {
+            updateAgentStates(prev => {
               const next = [...prev];
               next[activeAgentIndex] = { 
                 ...next[activeAgentIndex], 
@@ -88,7 +108,7 @@ export function WorkflowScreen() {
     };
 
     runAgent();
-  }, [activeAgentIndex, setScreen, uploadedFile]);
+  }, [activeAgentIndex, setScreen, updateAgentStates, uploadedFile]);
 
   return (
     <div className="p-6 space-y-6 animate-in fade-in duration-500">
@@ -138,7 +158,7 @@ export function WorkflowScreen() {
                   {isActive && (
                     <div className="space-y-2 animate-in fade-in slide-in-from-left-2 duration-500">
                       <p className="text-xs text-muted-foreground leading-relaxed italic">
-                        "{state.reasoning}"
+                        &quot;{state.reasoning}&quot;
                       </p>
                       <div className="flex items-center gap-2">
                          <Progress value={state.progress} className="h-1 flex-1 transition-all duration-500" />

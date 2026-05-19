@@ -6,31 +6,51 @@ import { generateAndJustifyDecision } from '@/ai/flows/generate-and-justify-deci
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, TrendingUp, ShieldAlert, Sparkles, ArrowRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { CheckCircle2, TrendingUp, Sparkles, ArrowRight } from 'lucide-react';
 
 export function DecisionScreen() {
   const { analysisResults, decisionResults, setDecisionResults, setScreen } = useDemo();
   const [loading, setLoading] = useState(!decisionResults);
 
   useEffect(() => {
-    if (!decisionResults && analysisResults) {
+    if (!decisionResults && analysisResults?.insights?.length) {
       const fetchDecision = async () => {
-        setLoading(true);
-        const input = {
-          businessIssues: analysisResults.insights.map(i => ({
-            description: i.title,
-            severity: i.severity.toUpperCase() as any,
-            confidence: i.confidence === 'High' ? 0.9 : i.confidence === 'Medium' ? 0.7 : 0.5
-          }))
-        };
-        const result = await generateAndJustifyDecision(input);
-        setDecisionResults(result);
-        setLoading(false);
+        try {
+          setLoading(true);
+          const input = {
+            businessIssues: analysisResults.insights.map(i => ({
+              description: i.title,
+              severity: i.severity.toUpperCase() as 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW',
+              confidence: i.confidence === 'High' ? 0.9 : i.confidence === 'Medium' ? 0.7 : 0.5
+            }))
+          };
+          const result = await generateAndJustifyDecision(input);
+          setDecisionResults(result);
+        } finally {
+          setLoading(false);
+        }
       };
       fetchDecision();
+    } else if (!analysisResults?.insights?.length) {
+      setLoading(false);
     }
   }, [analysisResults, decisionResults, setDecisionResults]);
+
+  if (!analysisResults?.insights?.length && !decisionResults) {
+    return (
+      <div className="p-6 space-y-4">
+        <h1 className="text-2xl font-headline font-bold">Autonomous Decision</h1>
+        <Card className="glass-card">
+          <CardContent className="p-5 space-y-3">
+            <p className="text-sm text-muted-foreground">No analyzed insights are available yet.</p>
+            <Button onClick={() => setScreen('UPLOAD')} className="w-full h-12 bg-intel-blue hover:bg-intel-blue/90 rounded-xl">
+              Upload a Report
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

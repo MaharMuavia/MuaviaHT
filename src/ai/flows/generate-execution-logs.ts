@@ -68,7 +68,7 @@ const generateExecutionLogsFlow = ai.defineFlow(
     try {
       const {output} = await generateExecutionLogsPrompt(input);
       return output!;
-    } catch (error: any) {
+    } catch {
       console.warn('AI Service Busy, using heuristic fallback for logs.');
       return `[14:01] Initializing autonomous execution core...
 [14:02] Analyzing strategy: ${input.strategy}

@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 
 export function InsightsScreen() {
   const { analysisResults, setScreen } = useDemo();
+  const insights = analysisResults?.insights ?? [];
 
   const getIcon = (title: string) => {
     const t = title.toLowerCase();
@@ -36,7 +37,15 @@ export function InsightsScreen() {
       </div>
 
       <div className="space-y-4">
-        {analysisResults?.insights.map((insight, idx) => {
+        {insights.length === 0 && (
+          <Card className="glass-card border-destructive/30 bg-destructive/5">
+            <CardContent className="p-5 space-y-2">
+              <h3 className="font-bold text-lg">No insights available</h3>
+              <p className="text-sm text-muted-foreground">Upload a report first, or try analyzing the file again.</p>
+            </CardContent>
+          </Card>
+        )}
+        {insights.map((insight, idx) => {
           const Icon = getIcon(insight.title);
           return (
             <Card 
@@ -77,6 +86,7 @@ export function InsightsScreen() {
 
       <div className="pt-4 animate-in fade-in slide-in-from-bottom-4 duration-700 stagger-4">
         <Button 
+          disabled={insights.length === 0}
           onClick={() => setScreen('DECISION')}
           className="w-full h-14 bg-intel-blue hover:bg-intel-blue/90 gap-2 rounded-2xl font-headline text-lg glow-active group relative overflow-hidden"
         >

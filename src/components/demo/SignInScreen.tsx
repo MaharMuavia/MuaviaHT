@@ -67,7 +67,7 @@ export function SignInScreen() {
               id="password" 
               name="password"
               type="password" 
-              placeholder="••••••••" 
+              placeholder="Password" 
               className="h-12 rounded-xl bg-secondary/50 border-white/5 focus:ring-intel-blue/50"
             />
             {errors.password && <p className="text-[10px] text-destructive px-1">{errors.password}</p>}
@@ -88,7 +88,7 @@ export function SignInScreen() {
             onClick={() => setScreen('SIGN_UP')}
             className="text-sm text-muted-foreground hover:text-intel-blue transition-colors"
           >
-            Don't have an account? <span className="text-foreground font-bold underline underline-offset-4">Sign Up</span>
+            Don&apos;t have an account? <span className="text-foreground font-bold underline underline-offset-4">Sign Up</span>
           </button>
           
           <div className="flex items-center gap-4 py-2">

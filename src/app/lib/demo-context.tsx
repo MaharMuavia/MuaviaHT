@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { AnalyzeAndGenerateInsightsOutput } from '@/ai/flows/analyze-and-generate-insights';
 import { GenerateAndJustifyDecisionOutput } from '@/ai/flows/generate-and-justify-decision-flow';
 
-type Screen = 'SIGN_IN' | 'SIGN_UP' | 'HOME' | 'UPLOAD' | 'WORKFLOW' | 'INSIGHTS' | 'DECISION' | 'EXECUTION' | 'RESULTS' | 'FAILURE';
+export type Screen = 'SIGN_IN' | 'SIGN_UP' | 'HOME' | 'UPLOAD' | 'WORKFLOW' | 'INSIGHTS' | 'DECISION' | 'EXECUTION' | 'RESULTS' | 'FAILURE';
 
 interface DemoContextType {
   currentScreen: Screen;

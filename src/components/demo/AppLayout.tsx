@@ -1,9 +1,8 @@
 "use client";
 
 import React from 'react';
-import { useDemo } from '@/app/lib/demo-context';
-import { Button } from '@/components/ui/button';
-import { Home, Upload, Activity, Lightbulb, Gavel, Play, BarChart3, Bot } from 'lucide-react';
+import { Screen, useDemo } from '@/app/lib/demo-context';
+import { Home, Upload, Activity, Lightbulb, Gavel, Play, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
@@ -11,7 +10,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   const isAuthScreen = currentScreen === 'SIGN_IN' || currentScreen === 'SIGN_UP';
 
-  const navItems = [
+  const navItems: Array<{ id: Screen; icon: React.ElementType; label: string }> = [
     { id: 'HOME', icon: Home, label: 'Home' },
     { id: 'UPLOAD', icon: Upload, label: 'Upload' },
     { id: 'WORKFLOW', icon: Activity, label: 'Agents' },
@@ -50,9 +49,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => setScreen(item.id as any)}
+              onClick={() => setScreen(item.id)}
               className={cn(
-                "flex flex-col items-center gap-1 transition-all duration-300",
+                "flex min-h-12 min-w-10 flex-col items-center justify-center gap-1 px-1 transition-all duration-300",
                 currentScreen === item.id ? "text-intel-blue" : "text-muted-foreground hover:text-foreground"
               )}
             >
