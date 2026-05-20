@@ -12,8 +12,8 @@ export function InsightsScreen() {
   const { analysisResults, setScreen } = useDemo();
   const insights = analysisResults?.insights ?? [];
 
-  const getIcon = (title: string) => {
-    const t = title.toLowerCase();
+  const getIcon = (label: string) => {
+    const t = label.toLowerCase();
     if (t.includes('revenue') || t.includes('sales')) return TrendingDown;
     if (t.includes('customer') || t.includes('complaint')) return Users;
     if (t.includes('inventory') || t.includes('stock')) return Package;
@@ -46,7 +46,10 @@ export function InsightsScreen() {
           </Card>
         )}
         {insights.map((insight, idx) => {
-          const Icon = getIcon(insight.title);
+          const title = insight.title ?? insight.description ?? insight.issue_type;
+          const explanation = insight.explanation ?? insight.reasoning;
+          const confidence = typeof insight.confidence === 'number' ? `${Math.round(insight.confidence * 100)}%` : 'N/A';
+          const Icon = getIcon(title);
           return (
             <Card 
               key={idx} 
@@ -65,17 +68,17 @@ export function InsightsScreen() {
                       {insight.severity}
                     </Badge>
                     <Badge variant="outline" className="text-[9px] uppercase tracking-tighter bg-intel-blue/5 text-intel-blue border-intel-blue/20">
-                      {insight.confidence} Conf.
+                      {confidence} Conf.
                     </Badge>
                   </div>
                 </div>
 
                 <div className="space-y-1">
                   <h3 className="font-bold text-lg leading-tight group-hover:text-intel-blue transition-colors duration-300">
-                    {insight.title}
+                    {title}
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {insight.explanation}
+                    {explanation}
                   </p>
                 </div>
               </CardContent>

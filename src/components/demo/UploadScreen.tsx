@@ -4,33 +4,21 @@ import React, { useState } from 'react';
 import { useDemo } from '@/app/lib/demo-context';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { FileUp, FileText, CheckCircle2, X, BrainCircuit, AlertCircle } from 'lucide-react';
-import { uploadFile } from '@/lib/api';
+import { uploadAndStreamAnalyzeFile } from '@/lib/api';
 
 export function UploadScreen() {
-  const { setScreen, setUploadedFile, setAnalysisResults } = useDemo();
+  const { setScreen, setUploadedFile, setAnalysisResults, setWorkflow, clearWorkflow, appendLiveEvent } = useDemo();
   const [file, setFile] = useState<File | null>(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (selected) {
+      clearWorkflow();
       setFile(selected);
       setErrorMessage(null);
-      // Simulate upload
-      setUploadProgress(0);
-      const interval = setInterval(() => {
-        setUploadProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            return 100;
-          }
-          return prev + 10;
-        });
-      }, 100);
     }
   };
 
@@ -39,16 +27,48 @@ export function UploadScreen() {
     setIsAnalyzing(true);
     setErrorMessage(null);
     setUploadedFile(file);
+    setScreen('WORKFLOW');
+    setWorkflow({ executionState: 'initializing', cachedResults: false, lastExecutionTimestamp: null });
     
     try {
-      // Upload file to local API route and analyze via Gemini
-      const analysisResp = await uploadFile(file);
+      const { upload, analysis } = await uploadAndStreamAnalyzeFile(
+        file,
+        'Frontend autonomous analysis run',
+        false,
+        (event) => {
+          appendLiveEvent(event);
+          if (event.workflow_id) {
+            setWorkflow({ workflowId: event.workflow_id });
+          }
+          if (event.event === 'analysis.completed' && event.analysis) {
+            setAnalysisResults(event.analysis);
+            setWorkflow({
+              workflowId: event.workflow_id ?? event.analysis.workflow_id ?? null,
+              uploadIds: event.analysis.upload_ids ?? [],
+              fileHash: null,
+              executionState: event.analysis.execution_state ?? 'completed',
+              cachedResults: Boolean(event.analysis.cached_results),
+              lastExecutionTimestamp: event.analysis.last_execution_timestamp ?? event.analysis.created_at,
+            });
+            setScreen('RESULTS');
+          }
+        },
+      );
 
-      // The demo context expects a specific shape; cast to any to avoid strict typing mismatch
-      setAnalysisResults(analysisResp);
-      setScreen('WORKFLOW');
+      setUploadedFile(file);
+      setAnalysisResults(analysis);
+      setWorkflow({
+        workflowId: analysis.workflow_id ?? analysis.id,
+        uploadIds: analysis.upload_ids ?? [upload.id],
+        fileHash: upload.file_hash ?? null,
+        executionState: analysis.execution_state ?? 'completed',
+        cachedResults: Boolean(analysis.cached_results),
+        lastExecutionTimestamp: analysis.last_execution_timestamp ?? analysis.created_at,
+      });
+      setScreen('RESULTS');
     } catch (error) {
       console.error(error);
+      setAnalysisResults(null);
       setErrorMessage(error instanceof Error ? error.message : 'Analysis failed. Please try another file.');
     } finally {
       setIsAnalyzing(false);
@@ -84,22 +104,16 @@ export function UploadScreen() {
                 <h3 className="text-sm font-medium truncate">{file.name}</h3>
                 <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(1)} KB</p>
               </div>
-              {uploadProgress === 100 ? (
-                <CheckCircle2 className="w-6 h-6 text-green-500" />
-              ) : (
-                <Button variant="ghost" size="icon" onClick={() => setFile(null)}>
-                  <X className="w-4 h-4" />
-                </Button>
-              )}
+              <CheckCircle2 className="w-6 h-6 text-green-500" />
+              <Button variant="ghost" size="icon" onClick={() => setFile(null)}>
+                <X className="w-4 h-4" />
+              </Button>
             </div>
-            {uploadProgress < 100 && (
-              <Progress value={uploadProgress} className="h-1 mt-4" />
-            )}
-            <div className="absolute inset-x-0 bottom-0 h-1 bg-intel-blue/20 animate-scanning opacity-20 pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-1 bg-intel-blue/20 opacity-20 pointer-events-none" />
           </Card>
 
           <Button 
-            disabled={uploadProgress < 100 || isAnalyzing}
+            disabled={isAnalyzing}
             onClick={handleAnalyze}
             className="w-full h-14 text-lg font-headline bg-intel-blue hover:bg-intel-blue/90 rounded-2xl glow-active"
           >
@@ -124,7 +138,7 @@ export function UploadScreen() {
       {/* Technical Metadata */}
       <div className="pt-4">
         <div className="text-[10px] font-mono text-muted-foreground flex justify-between border-t border-white/5 pt-4">
-          <span>MD5: 2F90A...B12</span>
+          <span>MD5: computed per upload</span>
           <span>ENCRYPTION: AES-256</span>
         </div>
       </div>

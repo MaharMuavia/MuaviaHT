@@ -10,6 +10,49 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
+const FALLBACK_AGENT_PROFILES: Record<string, { status: string; confidenceScore: number; reasoningSnippet: string }> = {
+  'Input Agent': {
+    status: 'Observing signals',
+    confidenceScore: 84,
+    reasoningSnippet: 'Extracting structured inputs from the source report and normalizing the data stream.',
+  },
+  'Insight Agent': {
+    status: 'Detecting anomalies',
+    confidenceScore: 88,
+    reasoningSnippet: 'Cross-referencing signals to surface business anomalies, trends, and pressure points.',
+  },
+  'Impact Agent': {
+    status: 'Estimating impact',
+    confidenceScore: 91,
+    reasoningSnippet: 'Translating the detected issues into operational and financial impact estimates.',
+  },
+  'Decision Agent': {
+    status: 'Ranking options',
+    confidenceScore: 93,
+    reasoningSnippet: 'Scoring strategic responses and selecting the option with the best balance of risk and reward.',
+  },
+  'Execution Agent': {
+    status: 'Simulating execution',
+    confidenceScore: 86,
+    reasoningSnippet: 'Projecting the selected strategy into concrete steps, dependencies, and observable actions.',
+  },
+  'Reflection Agent': {
+    status: 'Reviewing outcomes',
+    confidenceScore: 90,
+    reasoningSnippet: 'Evaluating the path taken and identifying what to refine before the next cycle.',
+  },
+};
+
+function getFallbackProfile(agentName: string) {
+  return (
+    FALLBACK_AGENT_PROFILES[agentName] ?? {
+      status: 'Heuristic processing',
+      confidenceScore: 85,
+      reasoningSnippet: `Agent ${agentName} is processing the current report context using heuristic pathways.`,
+    }
+  );
+}
+
 const GenerateLiveAgentReasoningInputSchema = z.object({
   agentName: z.string().describe('The name of the AI agent (e.g., Input Agent, Insight Agent).'),
   currentContext: z.string().describe('A summary of the data or task the agent is currently processing.'),
@@ -55,10 +98,11 @@ const generateLiveAgentReasoningFlow = ai.defineFlow(
       return output!;
     } catch {
       console.warn('AI Service Busy, using heuristic fallback for reasoning.');
+      const fallback = getFallbackProfile(input.agentName);
       return {
-        reasoningSnippet: `Agent ${input.agentName} is processing signals using heuristic neural pathways...`,
-        agentStatus: "Heuristic Processing",
-        confidenceScore: 92
+        reasoningSnippet: fallback.reasoningSnippet,
+        agentStatus: fallback.status,
+        confidenceScore: fallback.confidenceScore,
       };
     }
   }

@@ -6,7 +6,7 @@ import { Home, Upload, Activity, Lightbulb, Gavel, Play, BarChart3 } from 'lucid
 import { cn } from '@/lib/utils';
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
-  const { currentScreen, setScreen } = useDemo();
+  const { currentScreen, setScreen, workflow, liveEvents } = useDemo();
 
   const isAuthScreen = currentScreen === 'SIGN_IN' || currentScreen === 'SIGN_UP';
 
@@ -32,8 +32,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <span className="font-headline font-bold text-lg tracking-tight">VisualCore</span>
           </div>
           <div className="flex gap-2 items-center">
-             <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-             <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Live Engine</span>
+             <div className={cn("h-2 w-2 rounded-full animate-pulse", workflow.executionState === 'completed' ? 'bg-green-500' : workflow.executionState === 'failed' ? 'bg-red-500' : 'bg-intel-blue')} />
+             <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">{workflow.executionState}{liveEvents.length > 0 ? ' • live stream' : ''}</span>
           </div>
         </header>
       )}
